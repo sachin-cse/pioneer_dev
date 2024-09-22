@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    
+<head>
+    <link rel="prefetch" as="style" onload="this.rel = 'stylesheet'" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700">
+    <style>
+body.clicked{position:fixed;width:100%;height:100%}body.clicked:before{background:#fff;z-index:999}body.clicked:after{width:100px;height:100px;margin:-50px 0 0 -50px;z-index:999}.loader.clicked{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000}.loader.clicked:before{-webkit-border-radius:0;border-radius:0;background:rgba(0,0,0,.8)}.loader.clicked:after{width:70px;height:70px;margin:-35px 0 0 -35px;border-color:#fff transparent #fff #fff}.noloader.loader.clicked:after{display:none}.loader.clicked>div{position:absolute;left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);font-size:18px;line-height:35px;color:#fff;z-index:1;margin:40px 0 0;padding:30px;width:100%;text-align:center}.loader.clicked>div span{text-transform:uppercase;margin-top:20px}.clicked{position:relative;pointer-events:none}.clicked:after,.clicked:before{position:absolute;content:"";display:block;z-index:1}.clicked:before{top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.8);-webkit-border-radius:0;border-radius:0;opacity:1}.btn.clicked:before,[type=submit].clicked:before,[type=reset].clicked:before,button.clicked:before{-webkit-border-radius:3px;border-radius:3px;top:-1px;left:-1px;right:-1px;bottom:-1px}.clicked:after{top:50%;left:50%;margin:-12px 0 0 -12px;width:24px;height:24px;border:3px solid #3799FE;border-right-color:transparent;-webkit-border-radius:50%;border-radius:50%;-webkit-animation-duration:.75s;-moz-animation-duration:.75s;animation-duration:.75s;-webkit-animation-iteration-count:infinite;-moz-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-animation-name:rotate-forever;-moz-animation-name:rotate-forever;animation-name:rotate-forever;-webkit-animation-timing-function:linear;-moz-animation-timing-function:linear;animation-timing-function:linear}@-webkit-keyframes rotate-forever{0%{-webkit-transform:rotate(0);-moz-transform:rotate(0);-ms-transform:rotate(0);-o-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-ms-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes rotate-forever{0%{-webkit-transform:rotate(0);-moz-transform:rotate(0);-ms-transform:rotate(0);-o-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-ms-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes rotate-forever{0%{-webkit-transform:rotate(0);-moz-transform:rotate(0);-ms-transform:rotate(0);-o-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-ms-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}
+
+.common_banner,.container,.header_main,.nav_wrapper{position:relative}body{margin:0;padding:0}*,:after,:before{box-sizing:border-box}.responsive_nav,.scrollup{display:none}.header_main{top:0;left:0;right:0;z-index:5;border-top:5px solid #262525;border-bottom:5px solid #22942a;height:162px}.homebanner{height:450px;min-height:450px;overflow:hidden;background:#ccc}.container{width:1170px;padding:0 15px;margin:0 auto}.logo{width:128px;float:left;padding:10px 0}.hright{float:right;text-align:right;height:152px}.htop{color:#fff;background:#171817;padding:0 0 5px;float:right;height:35px}.hmiddle{padding:20px 0;clear:both;height:76px}.nav_wrapper{float:left;background:#22942a;padding:5px 0 0 30px;height:41px}
+@media only screen and (max-width: 991px) {.homebanner{height: auto;min-height:inherit}}
+    </style>
+    
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Skeleton CMS</title><meta name="keywords" content="Skeleton CMS" /><meta name="description" content="Skeleton CMS" /><link rel="canonical" href="http://localhost/pioneer_dev/" /><link rel="prefetch" as="style" onload="this.rel = 'stylesheet'" href="/skeleton/code/templates/default/css/plugins.min.css"><link rel="preload" as="style" onload="this.rel = 'stylesheet'" href="/skeleton/code/templates/default/css/style.min.css"><link rel="stylesheet" href="/skeleton/code/templates/default/css/responsive.min.css"><noscript><link rel="stylesheet" href="/skeleton/code/templates/default/css/plugins.min.css"><link rel="stylesheet" href="/skeleton/code/templates/default/css/style.min.css"></noscript><script>var isSafari=/constructor/i.test(window.HTMLElement)||function(e){return"[object SafariRemoteNotification]"===e.toString()}(!window.safari||safari.pushNotification),isIE=!!document.documentMode,isEdge=!isIE&&!!window.StyleMedia;if(isSafari||isIE||isEdge)for(var a=document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"prefetch"==o.rel&&(o.setAttribute("rel","stylesheet"),o.setAttribute("onload","null"))}
+                    !function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);</script>    <link type="image/x-icon" rel="shortcut icon" href="http://localhost/pioneer_dev/templates/default/images/favicon.ico">
+    <!--[if IE 7]> <html class="ie7"> <![endif]-->
+    <!--[if IE 8]> <html class="ie8"> <![endif]-->
+    <!--[if IE 9]> <html class="ie9"> <![endif]--> 
+    
+    <link rel="preload" as="image" href='http://localhost/pioneer_dev/templates/default/images/logo.png'>
+
+    <script defer type="text/javascript">
+        var SITE_LOC_PATH = 'http://localhost/pioneer_dev/';
+    </script>
+</head>
+
+<body class="clicked">    <div class="bodyOverlay"></div>
+    <div class="responsive_nav"></div>
+    <a class="scrollup" href="javascript:void(0);" aria-label="Scroll to top"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
+    
+    <header class="mainHeader">
+        <section class="header_main">
+            <div class="container">
+                <div class="logo">
+                    <a aria-label="Skeleton" href="http://localhost/pioneer_dev/" style="background-image:url(http://localhost/pioneer_dev/templates/default/images/logo.png);"></a>
+                </div>
+                <div class="hright">
+                    <div class="htop clearfix">
+                        <div class="time"><i class="fa fa-clock-o"></i> Monday - Friday 9:00AM - 6:00PM</div>
+                        
+                        <div class="social"><a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer nofollow" aria-label="Facebook" class="sk_facebook"><i class="fa fa-facebook"></i></a><a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer nofollow" aria-label="Twitter" class="sk_twitter"><i class="fa fa-twitter"></i></a><a href="https://plus.google.com" target="_blank" rel="noopener noreferrer nofollow" aria-label="Google Plus" class="sk_google-plus"><i class="fa fa-google-plus"></i></a><a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer nofollow" aria-label="Linkedin" class="sk_linkedin"><i class="fa fa-linkedin"></i></a></div>                    </div>
+                    <div class="hmiddle"> 
+                        <ul class="hinfo">
+                            <li>
+                                <span class="siteicon icon_phone"></span>
+                                <div>
+                                    <span>Call Us</span>
+                                    9876543210                                </div>
+                            </li>
+                            <li>
+                                <span class="siteicon icon_email"></span>
+                                <div>
+                                    <span>Email Us</span>
+                                    <a href="mailto:skeleton@eclickapps.com">skeleton@eclickapps.com</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="nav_wrapper">
+                        <nav class="nav_menu">
+                            <ul class=""><li><a href="https://eclickprojects.com/pioneer_enterprises/" ><span>Home</span></a> </li><li><a href="https://eclickprojects.com/pioneer_enterprises/about-us/" ><span>About Us</span></a> </li><li><a href="https://eclickprojects.com/pioneer_enterprises/contact-us/" ><span>Contact Us</span></a> </li></ul>                        </nav>
+                        <span class="responsive_btn"><span></span></span>
+                        
+                                                
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="common_banner homebanner">
+                    </section>
+        
+                    <section class="free_quote_sec">
+                <div class="container">
+                    <div class="free_quote_main">
+                        <div class="editor_text">
+                            <h2 class="heading noborder w text-center">FREE QUOTE - NO FIX, NO FEE!</h2>
+                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit vestibulum neque</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </header>
+    
+    <!--MAIN CONTAINER START-->
+    <main class="mainContainer">
+        
+<section class="section skewSection">
+    <div class="container">
+        <div class="image_section">
+            <figure class="image_section_inner" style="background-image: url(http://localhost/pioneer_dev/templates/default/images/sample/homeabt_img.jpg)"></figure>
+        </div>
+        <div class="content_section">
+            <div class="content_section_inner"></div>
+            <h2 class="heading w">Why <span>Choose Us</span></h2>
+            <ul class="ul row">
+                <li class="col-sm-6">
+                    <div class="speciality_box">
+                        <figure class="speciality_img">
+                            <img class="lazy" src="http://localhost/pioneer_dev/templates/default/images/blank.png" data-src="http://localhost/pioneer_dev/templates/default/images/sample/why_choose_img1.png" alt="">
+                        </figure>
+                        <div class="speciality_text">
+                            <h2 class="subheading"><span>Expert</span> Team</h2>
+                            <div class="editor_text">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempus enim id lectus ultricies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="col-sm-6">
+                    <div class="speciality_box">
+                        <div class="speciality_img">
+                            <img class="lazy" src="http://localhost/pioneer_dev/templates/default/images/blank.png" data-src="http://localhost/pioneer_dev/templates/default/images/sample/why_choose_img2.png" alt="">
+                        </div>
+                        <div class="speciality_text">
+                            <h2 class="subheading"><span>Expert</span> Team</h2>
+                            <div class="editor_text">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempus enim id lectus ultricies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="col-sm-6">
+                    <div class="speciality_box">
+                        <div class="speciality_img">
+                            <img class="lazy" src="http://localhost/pioneer_dev/templates/default/images/blank.png" data-src="http://localhost/pioneer_dev/templates/default/images/sample/why_choose_img3.png" alt="">
+                        </div>
+                        <div class="speciality_text">
+                            <h2 class="subheading"><span>Expert</span> Team</h2>
+                            <div class="editor_text">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempus enim id lectus ultricies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="col-sm-6">
+                    <div class="speciality_box">
+                        <div class="speciality_img">
+                            <img class="lazy" src="http://localhost/pioneer_dev/templates/default/images/blank.png" data-src="http://localhost/pioneer_dev/templates/default/images/sample/why_choose_img4.png" alt="">
+                        </div>
+                        <div class="speciality_text">
+                            <h2 class="subheading"><span>Expert</span> Team</h2>
+                            <div class="editor_text">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempus enim id lectus ultricies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+<section class="section skewSection hook_contact">
+    <div class="container">
+        <div class="image_section">
+            <figure class="image_section_inner" style="background-image: url(http://localhost/pioneer_dev/templates/default/images/sample/homeabt_img.jpg)"></figure>
+        </div>
+        <div class="content_section">
+            <div class="content_section_inner"></div>
+            <h2 class="heading w">Get <span>in Touch</span></h2>
+            <div class="about_sec mb30">
+                <div class="sk_content">
+                    <div class="editor_text">
+                        <p>For more information, please call 9876543210 or fill out the form below and we will get back to you as soon as possible.</p>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            
+            <div class="form_wrap ">
+                        <form name="contact" method="POST">
+                            <ul class="row">
+                                <li class="col-sm-12">
+                                    <label class="labelWrap">
+                                        <span class="hideLabel">Name</span>
+                                        <input type="text" name="name" placeholder="Name">
+                                    </label>
+                                </li>
+
+                                <li class="col-sm-12">
+                                    <label class="labelWrap">
+                                        <span class="hideLabel">Email</span>
+                                        <input type="text" name="email" placeholder="Email">
+                                    </label>
+                                </li>
+
+                                <li class="col-sm-12">
+                                    <label class="labelWrap">
+                                        <span class="hideLabel">Phone</span>
+                                        <input type="text" name="phone" placeholder="Phone">
+                                    </label>
+                                </li>
+                                <li class="col-sm-12">
+                                    <label class="labelWrap">
+                                        <span class="hideLabel">Message</span>
+                                        <textarea name="message" placeholder="Message"></textarea>
+                                    </label>
+                                </li>
+                                <li class="col-sm-12">
+                                    <div class="labelWrap"><div class="btn_wr">
+                                            <button type="submit" data-action="submit" onclick="submitForm(this, event);">Submit</button>
+                                            <input type="hidden" name="SourceForm" value="contact">
+                                            <input type="hidden" name="goto" value="http://localhost/pioneer_dev/contact-us/thank-you/">
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="ErrInqMsg"></div>
+                        </form>
+                    </div>
+                    <script defer type="text/javascript">
+                        function submitForm(obj, event) { 
+                            event.preventDefault();
+
+                            grecaptcha.ready(function() {
+                                grecaptcha.execute("", {action: 'submit'}).then(function(token) {
+                                    var btn      = $(obj), 
+                                        form     = btn.parents('form'), 
+                                        formData = form.serialize()+'&g-recaptcha-response='+token,
+                                        msg      = form.find('.ErrInqMsg'), 
+                                        url      = "http://localhost/pioneer_dev/ajx_action/contact-us/";
+                                    ajaxFormSubmit(form, formData, btn, msg, url, false);
+                                });
+                            });
+                        }
+                    </script>        </div>
+    </div>
+</section>
+
+
+</main>
+
+<footer class="mainFooter">
+    <div class="container">
+        <nav class="fnav">
+            <ul class=""><li><a href="http://eclickprojects.com/skeleton/latest/code/privacy-policy/" ><span>Privacy Policy</span></a> </li><li><a href="http://eclickprojects.com/skeleton/latest/code/terms-amp-conditions/" ><span>Terms &amp; Conditions</span></a> </li></ul>
+        </nav>
+        <section class="copyright">
+            <p>&copy; 2024 <a href="http://localhost/pioneer_dev/">Skeleton</a>. All Rights Reserved.</p>
+            <p>Designed & Developed by <a href="http://www.eclicksoftwares.com/" rel="noopener noreferrer nofollow" target="_blank" title="Eclick Softwares & Solutions Pvt. Ltd.">Eclick Softwares & Solutions Pvt. Ltd.</a></p>
+        </section>
+    </div>
+</footer>
+
+<script  type="text/javascript">function $import(src, appendTo){ var scriptElem = document.createElement('script'); scriptElem.setAttribute('src',src); scriptElem.setAttribute('type','text/javascript');  document.getElementsByTagName(appendTo)[0].appendChild(scriptElem); } var delay = 1; setTimeout(function(){$import("/skeleton/code/templates/default/js/plugins.min.js", "head");}, delay * 1000);function defer(method, src, appendTo) { if(window.jQuery){ method(src, appendTo); } else { setTimeout(function(){ defer(method, src, appendTo);  }, 50); } }defer($import, "https://www.google.com/recaptcha/api.js?render=6LeXBH8bAAAAAFprl9ery2cbn8epd1KwFD4y8sut", "body");defer($import, "/skeleton/code/templates/default/js/custom.min.js", "body");</script>
+<script defer type="text/javascript">
+    document.body.className = document.body.className.replace("clicked", "");
+
+    /** FACEBOOK_LOGIN START */
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '605677200556972',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v12.0'
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function testAPI() {
+        
+        FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'},
+        function (response) {
+            //document.getElementById('fblogout').setAttribute("onclick","fbLogout()");
+            var btn      = '',
+                form     = '',
+                formData = {'SourceForm': 'socialLogin', 'rgstrType': 'FACEBOOK', 'response': response},
+                msg      = $('#status'),
+                url      = "http://localhost/pioneer_dev/ajx_action/dashboard/";
+            ajaxFormSubmit(form, formData, btn, msg, url, false);
+        });
+    }
+
+    function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+            if (response.status === 'connected')
+                return 1;
+            else
+                return 0;
+        });
+    }
+
+    function fbLogout() {
+        FB.logout(function() {
+            document.getElementById('fbLink').setAttribute("onclick","fbLogin()");
+        });
+    }
+    /** FACEBOOK_LOGIN END */
+</script>
+
+</body>
+
+</html>

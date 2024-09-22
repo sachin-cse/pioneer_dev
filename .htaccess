@@ -1,0 +1,343 @@
+DirectoryIndex index.php index.html index.htm
+#SetEnv TZ America/Los_Angeles
+AddDefaultCharset UTF-8
+AddType 'text/html; charset=UTF-8' html
+SetEnvIfNoCase User-Agent "^wget" bad_bot
+<Limit GET POST>
+   Order Allow,Deny
+   Allow from all
+   Deny from env=bad_bot
+</Limit>
+
+# 4 weeks
+<filesMatch "\.(ico|gif|jpg|jpeg|png|flv|pdf|woff|woff2|js|css)$">
+Header set Cache-Control "max-age=31536000, public, must-revalidate"
+</filesMatch>
+
+# 1 day
+<FilesMatch "\.(xml|txt)$">
+Header set Cache-Control "max-age=86400, public, must-revalidate"
+</FilesMatch>
+
+# 24 HOURS
+<FilesMatch "\.(html|htm|txt|php)$">
+ Header set Cache-Control "max-age=86400"
+</FilesMatch>
+
+# -----------------------------------------------------------------------
+# Defining MIME types to ensure the web server actually knows about them.
+# -----------------------------------------------------------------------
+<IfModule mod_mime.c>
+    AddType application/javascript          js
+    AddType application/vnd.ms-fontobject   eot
+    AddType application/x-font-ttf          ttf ttc
+    AddType font/opentype                   otf
+    AddType application/x-font-woff         woff
+    AddType image/svg+xml                   svg svgz 
+    AddEncoding gzip                        svgz
+</Ifmodule>
+
+# -----------------------------------------------------------------------
+# Compressing output.
+# -----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+	#The following line is enough for .js and .css
+    AddOutputFilter DEFLATE js css
+	
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/json
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE text/xml application/xml text/x-component
+    AddOutputFilterByType DEFLATE application/xhtml+xml application/rss+xml application/atom+xml
+    AddOutputFilterByType DEFLATE image/x-icon image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype
+	
+	#The following lines are to avoid bugs with some browsers
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html 
+</Ifmodule>
+
+<IfModule mod_headers.c>
+    #Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+    Header set X-XSS-Protection "1; mode=block"
+	Header set Connection keep-alive 
+	<FilesMatch "\.(js|css|xml|gz)$">
+		Header append Vary: Accept-Encoding
+	</FilesMatch>
+</IfModule>
+
+Header unset ETag
+FileETag None
+FileETag MTime Size
+
+<IfModule expires_module>
+    ExpiresActive on
+    ExpiresByType text/plain "access plus 1 week"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType text/javascript "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType application/x-javascript "access plus 1 week"
+    ExpiresByType image/svg+xml "access plus 1 week"
+    ExpiresByType image/gif "access plus 1 week"
+    ExpiresByType image/png "access plus 1 week"
+    ExpiresByType image/ico "access plus 1 week"
+    ExpiresByType image/x-icon "access plus 1 week"
+    ExpiresByType image/jpg "access plus 1 week"
+    ExpiresByType image/jpe "access plus 1 week"
+    ExpiresByType image/jpeg "access plus 1 week"
+    ExpiresByType font/truetype "access plus 1 week"
+    ExpiresByType application/x-font-ttf "access plus 1 week"
+    ExpiresByType font/opentype "access plus 1 week"
+    ExpiresByType application/x-font-otf "access plus 1 week"
+    ExpiresByType application/font-woff "access plus 1 week"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 week"
+    ExpiresByType application/x-shockwave-flash "access plus 1 week"
+    ExpiresByType application/x-httpd-php-source "access plus 1 week"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    #Custom code to prevent server from clickjacking attack
+    Header append X-FRAME-OPTIONS "SAMEORIGIN"
+    #Header append X-FRAME-OPTIONS "DENY"
+    
+    # For security reasons, Option followsymlinks cannot be overridden.
+    Options +FollowSymlinks
+    #Options +SymLinksIfOwnerMatch
+    RewriteEngine On
+
+    #Blocking Spam Referrer---------------------------------------------------------------
+    RewriteCond %{HTTP_REFERER} ^http://.*free-share-buttons\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*googlsucks\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*4webmasters\.org/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*hulfingtonpost\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Get-Free-Traffic-Now\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*aliexpress\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*simple-share-buttons\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*theguardlan\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*buy-cheap-online\.info/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*event-tracking\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*free-social-buttons\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*uni\.me/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*buttons-for-website\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*best-seo-offer\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*buttons-for-your-website\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*pornhub-forum\.ga/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*best-seo-solution\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*amanda-porn\.ga/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*penamail\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*agm1\.us/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*hao123\.com\.eg/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*1and1\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*telstra\.com\.au/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*myway\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*semalt\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*silktide\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*youporn-forum\.ga/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*torture\.ml/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*forum69\.info/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*o-o-6-o-o\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Bestwebsitesawards\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Priceg\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Lombia\.co/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Lomb\.co/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Iskalko\.ru/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*BlackHatWorth\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Pricereg\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*Econom\.co/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*ILoveVitaly\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*humanorightswatch\.org/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*7makemoneyonline\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*anticrawler\.org/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*humanorightswatch\.org/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*rapidgator-porn\.ga/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*doubleclick\.net/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*delta-search\.com/ [NC,OR]
+    RewriteCond %{HTTP_REFERER} ^http://.*darodar\.com/ [NC]
+    
+    
+    RewriteCond %{HTTP_USER_AGENT} ^BlackWidow [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Bolt\ 0 [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Bot\ mailto:eclicksajal\@gmail\.com [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} CazoodleBot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^ChinaClaw [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Custo [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Default\ Browser\ 0 [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^DIIbot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^DISCo [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} discobot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Download\ Demon [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^eCatch [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ecxi [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^EirGrabber [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^EmailCollector [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^EmailSiphon [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^EmailWolf [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Express\ WebPictures [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^ExtractorPro [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^EyeNetIE [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^FlashGet [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^GetRight [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^GetWeb! [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Go!Zilla [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Go-Ahead-Got-It [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^GrabNet [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Grafula [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} GT::WWW [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} heritrix [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^HMView [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} HTTP::Lite [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} HTTrack [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ia_archiver [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} IDBot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} id-search [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} id-search\.org [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Image\ Stripper [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Image\ Sucker [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Indy\ Library [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^InterGET [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Internet\ Ninja [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^InternetSeer\.com [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} IRLbot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ISC\ Systems\ iRc\ Search\ 2\.1 [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Java [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^JetCar [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^JOC\ Web\ Spider [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^larbin [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^LeechFTP [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} libwww [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} libwww-perl [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Link [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} LinksManager.com_bot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} linkwalker [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} lwp-trivial [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Mass\ Downloader [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Maxthon$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} MFC_Tear_Sample [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^microsoft\.url [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Microsoft\ URL\ Control [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^MIDown\ tool [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Mister\ PiX [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Missigua\ Locator [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Mozilla\.*Indy [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Mozilla\.*NEWT [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^MSFrontPage [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Navroad [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^NearSite [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^NetAnts [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^NetSpider [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Net\ Vampire [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^NetZIP [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Nutch [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Octopus [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Offline\ Explorer [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Offline\ Navigator [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^PageGrabber [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} panscient.com [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Papa\ Foto [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^pavuk [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} PECL::HTTP [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^PeoplePal [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^pcBrowser [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Ping [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} PHPCrawl [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} PleaseCrawl [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^psbot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^RealDownload [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^ReGet [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Rippers\ 0 [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} SBIder [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^SeaMonkey$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^sitecheck\.internetseer\.com [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^SiteSnagger [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^SmartDownload [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Snoopy [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Steeler [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^SuperBot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^SuperHTTP [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Surfbot [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^tAkeOut [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Teleport\ Pro [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Toata\ dragostea\ mea\ pentru\ diavola [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} URI::Fetch [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} urllib [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} User-Agent [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^VoidEYE [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Web\ Image\ Collector [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Web\ Sucker [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Web\ Sucker [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} webalta [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebAuto [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^[Ww]eb[Bb]andit [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} WebCollage [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebCopier [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebFetch [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebGo\ IS [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebLeacher [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebReaper [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebSauger [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Website\ eXtractor [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Website\ Quester [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebStripper [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebWhacker [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WebZIP [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Wells\ Search\ II [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} WEP\ Search [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Wget [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Widow [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WWW-Mechanize [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^WWWOFFLE [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Xaldon\ WebSpider [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} Yandex [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} zermelo [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Zeus [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^Zeus\.*Webster [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ZyBorg [NC]
+    RewriteCond %{HTTP_USER_AGENT} DirBuster [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} OWASP [NC,OR]
+    #RewriteRule ^.* - [F,L]
+    RewriteRule ^(.*)$ – [F,L]
+    # Abuse bot blocking rule end
+    #-------------------------------------------------------------------------------------
+
+    RewriteBase /
+    
+    # removing multiple slashes after domain
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ //*(.+)//+(.*)\ HTTP
+    RewriteRule ^ /%1/%2 [R,L]
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ //+(.*)\ HTTP
+    RewriteRule ^ /%1 [R,L]
+
+    # remove spaces from start or after /
+    #RewriteRule ^(.*/|)[\s%20]+(.+)$ $1$2 [L,R,NE]
+    
+    # remove spaces from end or before /
+    #RewriteRule ^(.+?)[\s%20]+(/.*|)$ $1$2 [L,R,NE]
+    RewriteCond %{REQUEST_URI} ^(.*)//(.*)$
+    RewriteRule . %1/%2 [R=301,L]
+
+    #cannonical issue---------------
+    RewriteRule ^adminpanel/ - [PT,L,QSA]
+    RewriteRule ^adminpanel/$ /adminpanel/index.php [L,QSA]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.php\ HTTP/
+    RewriteRule ^(.*)index\.php$ /$1 [R=301,L]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\ HTTP/
+    RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.htm\ HTTP/
+    RewriteRule ^(.*)index\.htm$ /$1 [R=301,L]
+    RewriteRule ^(.*)\.html$ /$1 [L,R=301] 
+
+    ErrorDocument 404 /404.html
+
+    #cannonical issue---------------
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    RewriteRule ^$ /pioneer_dev/index.php [L,QSA]
+    RewriteRule ^(.*)/(.*)/(.*)/$ /pioneer_dev/index.php?pageType=$1&dtls=$2&dtaction=$3 [L,QSA]
+    RewriteRule ^(.*)/(.*)/$ /pioneer_dev/index.php?pageType=$1&dtaction=$2 [L,QSA]
+    RewriteRule ^(.*)/$ /pioneer_dev/index.php?pageType=$1 [L,QSA]
+    #RewriteRule ^(.*)\.html$ /pioneer_dev/index.php?pageType=$1 [L,QSA]
+    
+    RewriteCond %{REQUEST_URI} !(/$|\.) 
+    RewriteRule (.*) %{REQUEST_URI}/ [R=301,L] 
+</IfModule>
