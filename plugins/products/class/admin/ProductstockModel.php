@@ -169,24 +169,24 @@ class ProductstockModel extends Site
                         foreach($getChildCatProduct as $pp => $key_new)
                         {
                             $STOCKENTITY = "productId = ".$key_new['productId'];
-                            $STOCKENTITY .= $ExtraQryStrS;
+                           // $STOCKENTITY .= $ExtraQryStrS;
                             
-                            $stockQty = $this->selectSingle(TBL_PRODUCT_PURCHASE_STOCK, "SUM(purchaseQty) as qtyStock, purchasePrice", $STOCKENTITY);
+                            $stockQty = $this->selectSingle(TBL_PRODUCT_AVAILABLR_STOCK, "inStock", $STOCKENTITY);
 
                             $PURENTITY = "productId = ".$key_new['productId'];
                             $PURENTITY .= $ExtraQryStrS;
-                            $PURENTITY .= " ORDER BY purchaseDate DESC";
+                            $PURENTITY .= " ORDER BY purchaseStockId DESC";
 
                             $latestPrice = $this->selectSingle(TBL_PRODUCT_PURCHASE_STOCK, "purchasePrice", $PURENTITY);
 
-                            if($stockQty['qtyStock'] !="" && $purchaseDate =="")
+                            if($stockQty['inStock'] !="" && $purchaseDate =="")
                             {
-                                $metaArray[$pt]['categoryProduct'][$pp]['stockQty'] = $stockQty['qtyStock'];
+                                $metaArray[$pt]['categoryProduct'][$pp]['stockQty'] = $stockQty['inStock'];
                                 $metaArray[$pt]['categoryProduct'][$pp]['latestPrice'] = $latestPrice['purchasePrice'];
                             }
-                            else if($stockQty['qtyStock'] !="" && $purchaseDate !="")
+                            else if($stockQty['inStock'] !="" && $purchaseDate !="")
                             {
-                                $metaArray[$pt]['categoryProduct'][$pp]['stockQty'] = $stockQty['qtyStock'];
+                                $metaArray[$pt]['categoryProduct'][$pp]['stockQty'] = $stockQty['inStock'];
                                 $metaArray[$pt]['categoryProduct'][$pp]['latestPrice'] = $stockQty['purchasePrice'];
                             }
                             else
@@ -224,24 +224,24 @@ class ProductstockModel extends Site
                         foreach($getChildCatProduct as $pp => $key_new)
                         {
                             $STOCKENTITY = "productId = ".$key_new['productId'];
-                            $STOCKENTITY .= $ExtraQryStrS;
+                            //$STOCKENTITY .= $ExtraQryStrS;
 
-                            $stockQty = $this->selectSingle(TBL_PRODUCT_PURCHASE_STOCK, "SUM(purchaseQty) as qtyStock, purchasePrice", $STOCKENTITY);
+                            $stockQty = $this->selectSingle(TBL_PRODUCT_AVAILABLR_STOCK, "inStock", $STOCKENTITY);
 
                             $PURENTITY = "productId = ".$key_new['productId'];
                             $PURENTITY .= $ExtraQryStrS;
-                            $PURENTITY .= " ORDER BY purchaseDate DESC";
+                            $PURENTITY .= " ORDER BY purchaseStockId DESC";
 
                             $latestPrice = $this->selectSingle(TBL_PRODUCT_PURCHASE_STOCK, "purchasePrice", $PURENTITY);
 
-                            if($stockQty['qtyStock'] !="" && $purchaseDate =="")
+                            if($stockQty['inStock'] !="" && $purchaseDate =="")
                             {
-                                $metaArray[$pt]['subCat'][$cpt]['categoryProduct'][$pp]['stockQty'] = $stockQty['qtyStock'];
+                                $metaArray[$pt]['subCat'][$cpt]['categoryProduct'][$pp]['stockQty'] = $stockQty['inStock'];
                                 $metaArray[$pt]['subCat'][$cpt]['categoryProduct'][$pp]['latestPrice'] = $latestPrice['purchasePrice'];
                             }
-                            else if($stockQty['qtyStock'] !="" && $purchaseDate !="")
+                            else if($stockQty['inStock'] !="" && $purchaseDate !="")
                             {
-                                $metaArray[$pt]['subCat'][$cpt]['categoryProduct'][$pp]['stockQty'] = $stockQty['qtyStock'];
+                                $metaArray[$pt]['subCat'][$cpt]['categoryProduct'][$pp]['stockQty'] = $stockQty['inStock'];
                                 $metaArray[$pt]['subCat'][$cpt]['categoryProduct'][$pp]['latestPrice'] = $stockQty['purchasePrice'];
                             }
                             else
@@ -261,6 +261,40 @@ class ProductstockModel extends Site
         //showArray($metaArray); exit;
 
         return $metaArray;
+    }
+
+    function availableStock($productId)
+    {
+        $ExtraQryStr = "pas.productId = ".$productId;
+
+        $ENTITY = TBL_PRODUCT_AVAILABLR_STOCK ." pas";
+
+        return $this->rowCount($ENTITY, "pas.productStockId", $ExtraQryStr);
+    }
+
+    function insProductAvlStock($incparams) {
+        return $this->insertQuery(TBL_PRODUCT_AVAILABLR_STOCK, $incparams);
+    }
+
+    function updateProductAvlStock($upparams) {
+        
+        $ENTITY = TBL_PRODUCT_AVAILABLR_STOCK ." pas";
+        $ExtraQryStr = "pas.productId = ".$upparams['productId']." ";
+
+        $getStockAmnt = $this->selectAll($ENTITY, "pas.*", $ExtraQryStr);
+
+        $total = 0;
+
+        foreach($getStockAmnt as $amnt)
+        {
+            $total = $total + $amnt['inStock'];
+        }
+
+        $newParam['inStock'] = ($total + $upparams['inStock']);
+
+        $CLAUSE = "productId = ".addslashes($upparams['productId']);
+
+        return $this->updateQuery(TBL_PRODUCT_AVAILABLR_STOCK, $newParam, $CLAUSE);
     }
 
 }

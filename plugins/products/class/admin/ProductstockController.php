@@ -361,6 +361,23 @@ class ProductstockController extends REST
                     $this->model->insPurchaseStock($params);
                     $this->model->delTempStock($productId);
 
+                    $availableStock = $this->model->availableStock($productId);
+
+                    if($availableStock > 0)
+                    {
+                        $upparams['productId']    = $productId;
+                        $upparams['inStock']      = $tempStockQty;
+                        
+                        $this->model->updateProductAvlStock($upparams);
+                    }
+                    else
+                    {
+                        $incparams['productId']    = $productId;
+                        $incparams['inStock']      = $tempStockQty;
+                        
+                        $this->model->insProductAvlStock($incparams);
+                    }
+
                 }
                 $actMsg['type']                 = 1;
                 $actMsg['message']              = 'Stock added successful.';

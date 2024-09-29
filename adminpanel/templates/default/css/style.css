@@ -2723,7 +2723,7 @@ footer p {font-size: 12px;}
 /*    Input Style
 ------------------------*/
 .form-group/* , [class*="col-"] .form-group */ {margin-bottom: 20px;}
-.form-group:after {content: "";display: block;clear: both;}
+.form-group:after {content: "";display: none;clear: both;}
 .form-group:last-child{margin-bottom: 0;}
 .form-inline .form-group{margin-right: 20px;}
 .form-inline .form-group:last-child{margin-right: 0;}
@@ -2744,6 +2744,19 @@ select.form-control{
   background-image: url("../images/select.png");
   background-position: right center;
   background-repeat: no-repeat;
+	padding-right: 20px;
+}
+.select2-search__field {
+	border: 1px solid #ced4da;
+}
+.select2-selection__rendered {
+	border: 1px solid #ced4da;
+	padding: .375rem .75rem;
+	appearance: none !important;
+	cursor: pointer;
+	background-image: url("../images/select.png");
+	background-position: right center;
+	background-repeat: no-repeat;
 	padding-right: 20px;
 }
 select.form-control:not([size]):not([multiple]){height: 36px;}
@@ -5608,4 +5621,119 @@ a.close::before {
 	text-indent: 0;
 	text-shadow: 0 -1px 0 #123;
 	line-height: 1em;
+}
+/* .showOrder, .closeVendorHistoryTbl{
+	background-color: #1976d2;
+	color: #fff;
+	padding: 6px;
+	font-size: 12px;
+	border: 1px solid #1976d2;
+}
+.showOrder:hover, .closeVendorHistoryTbl:hover{
+  color: #1976d2;
+  background-color: #fff;
+} */
+/* .viewMoreBtn
+{
+  color: #1976d2;
+	background-color: #fff;
+	padding: 6px;
+	font-size: 12px;
+	border: 1px solid #1976d2; 
+}
+.viewMoreBtn:hover
+{
+  background-color: #1976d2;
+	color: #fff;
+} */
+.vendorDetails {	
+  padding: 15px !important;
+	height: auto;
+}
+ul.button_wrap{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px 0;
+}
+ul.button_wrap li a{
+  border: 1px solid;
+  padding: 10px 8px;
+  border-radius: 5px;
+}
+.tooltipBtn {
+	position: relative;
+	display: inline-block;
+	font-size: 16px;
+}
+.tooltipBtn .tooltiptext {
+	visibility: hidden;
+	width: 90px;
+	background-color: #252525d1;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 2px 0;
+	position: absolute;
+	z-index: 1;
+	top: 0px;
+	left: 120%;
+	font-size: 12px;
+}
+.tooltipBtn:hover .tooltiptext {
+  visibility: visible;
+}
+.closeVendorHistoryTbl {
+	cursor: pointer;
+}
+.closeVendorHistoryTbl i {
+	color: #1976d2;
+	margin-right: 25px;
+}
+.closeVendorHistoryTbl.tooltipBtn .tooltiptext {
+	left: 40%;
+}
+.trash_position{
+  position: relative;
+  top: -2px;
+  left: -56px;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+.trash_bx_ico{
+  position: relative;
+}
+.trash_bx_ico input{
+  height: 36px;
+}
+
+/* sweet alert css */
+.sa-confirm-button-container button:hover{
+  color:#fff !important;
+}
+
+.sa-confirm-button-container button{
+  color:#fff !important;
+}
+
+.sa-button-container button:hover{
+  color:#fff !important;
+}
+
+.sa-button-container button{
+  color:#fff !important;
+}
+
+.viewChildTable th {
+	font-weight: unset !important;
+}
+.select2-results {
+	display: block;
+	max-height: 350px;
+	overflow: scroll;
+}
+#datepicker {
+	width: 100%;
+	padding: 5px;
 }

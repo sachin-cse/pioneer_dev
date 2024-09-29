@@ -1,0 +1,10 @@
+<?php defined('BASE') OR exit('No direct script access allowed.');
+
+class PapertypeModel extends Site{
+    function getLinkedPages($parent_dir, $start, $limit){
+        $ENTITY         = TBL_MENU_CATEGORY." mc JOIN ".TBL_MODULE." m ON (m.menu_id = mc.moduleId)";
+        $ExtraQryStr    = "mc.status = 'Y' AND m.parent_dir = '".addslashes($parent_dir)."' AND m.child_dir = '' ORDER BY mc.displayOrder";
+        
+		return $this->selectMulti($ENTITY, "mc.categoryId, mc.categoryName, mc.permalink", $ExtraQryStr, $start, $limit); 
+    }
+}

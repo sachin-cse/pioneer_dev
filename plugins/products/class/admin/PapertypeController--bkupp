@@ -1,0 +1,20 @@
+<?php defined('BASE') OR exit('No direct script access allowed.');
+
+class PapertypeController extends REST{
+    private    $model;
+    protected  $response = [];
+
+    public function __construct(PapertypeModel $model = null) {
+        parent::__construct();
+
+        if ($model == null)
+            $model  = new PapertypeModel;
+
+        $this->model = $model;
+    }
+
+    function index($act = []){
+        $this->response['linkedPages']          = $this->model->getLinkedPages($this->_request['pageType'], 0, 100);
+        return $this->response;
+    }
+}

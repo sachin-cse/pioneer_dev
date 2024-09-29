@@ -1,5 +1,18 @@
 $(document).ready(function(){
 
+    $("#datepicker").datepicker({
+        firstDay: 1,
+        showOtherMonths: true,
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        maxDate: new Date()
+      });
+      
+      $(".date").mousedown(function() {
+        $(".ui-datepicker").addClass("active");
+      });
+
     /*MULTI ACTION SECTION START-------------------------------------------------*/
     // add multiple select / deselect functionality
     $(document).on('change', '.selectall', function () {
@@ -347,3 +360,21 @@ $('.tags').tagcloud({
 
 });
 var tags = $('.tags').tagcloud('get');
+
+// function getDateformat(dateVal){
+//     var currentTime = dateVal;
+//     var Month=new Array("January", "February", "March","April", "May", "June", "July", "August", "September", "October", "November", "December");
+//     var Suffix=new Array("th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th");
+//     var day = currentTime.getDate();
+//     var month = currentTime.getMonth();
+//     var year = currentTime.getFullYear();
+//     if (day % 100 >= 11 && day % 100 <= 13){
+//         today = day + "th";
+//     }else{
+//         today = day + Suffix[day % 10];
+//     }
+
+// return (today + " " + Month[month] + ' ' + year);
+// }
+
+// getDateformat('2024-09-2');

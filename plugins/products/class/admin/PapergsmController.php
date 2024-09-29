@@ -109,23 +109,32 @@ class PapergsmController extends REST
         $actMsg['type']           = 0;
         $actMsg['message']        = '';
 
-        if($this->_request['multiAction']){
-            foreach($this->_request['selectMulti'] as $val) {
-                $params = array();
-                switch($this->_request['multiAction']) {
-                    case "1":
-                        $params['gsmStatus']       = 'Y';
-                        break;
-                    case "2":
-                        $params['gsmStatus']       = 'N';
-                        break;
-                    default:
-                        $this->response('', 406);
-                }
+        if($this->_request['multiAction'] == ''){
+            $actMsg['message']        = 'Please select an option';
+        }
 
-                $this->model->gsmUpdateById($params, $val);
-                $actMsg['type']           = 1;
-                $actMsg['message']        = 'Operation successful.';
+        if($this->_request['multiAction']){
+
+            if(!empty($this->_request['selectMulti'])){
+                foreach($this->_request['selectMulti'] as $val) {
+                    $params = array();
+                    switch($this->_request['multiAction']) {
+                        case "1":
+                            $params['gsmStatus']       = 'Y';
+                            break;
+                        case "2":
+                            $params['gsmStatus']       = 'N';
+                            break;
+                        default:
+                            $this->response('', 406);
+                    }
+    
+                    $this->model->gsmUpdateById($params, $val);
+                    $actMsg['type']           = 1;
+                    $actMsg['message']        = 'Operation successful.';
+                }
+            }else{
+                $actMsg['message']        = 'Please check at least one checkbox';
             }
         }   
         

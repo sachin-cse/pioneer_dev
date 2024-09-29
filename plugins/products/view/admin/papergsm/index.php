@@ -36,7 +36,7 @@ if($data['selectedGSM']) {
                                         </tr>
                                     </thead>
                                     
-                                    <tbody class="swap">
+                                    <tbody>
                                         <?php
                                         $slNo = ($this->_request['page'] > 1) ? (($this->_request['page'] - 1) * $data['limit']) + 1 : 1;
                                         foreach($data['gsm'] as $item) {

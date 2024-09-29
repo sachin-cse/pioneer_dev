@@ -125,9 +125,13 @@ class ProductlistModel extends Site
         return $this->selectMulti($ENTITY, "tp.*, tps.sizeName, tpg.gsmName, tpt.categoryName", $ExtraQryStr, $start, $limit); 
     }
 
-    function getProductCategoriwiseByLimit($ExtraQryStr1 = '', $start, $limit) {
+    function getProductCategoriwiseByLimit($ExtraQryStr,$ExtraQryStr1 = '', $start, $limit,$flag) {
 
-        $ExtraQryStr = "status = 'Y' AND parentId= 0 ORDER BY displayOrder";
+        if($flag){
+            $ExtraQryStr .= " AND status = 'Y' AND parentId >= 0 ORDER BY displayOrder";
+        }else{
+            $ExtraQryStr = "status = 'Y' AND parentId = 0 ORDER BY displayOrder";
+        }
         $productType = $this->selectAll(TBL_PRODUCT_TYPE, "categoryId, categoryName", $ExtraQryStr);
 
         $metaArray = array();
@@ -223,5 +227,21 @@ class ProductlistModel extends Site
 
     function checkExistence($ExtraQryStr) {
         return $this->selectSingle(TBL_PRODUCT, "*", $ExtraQryStr);
+    }
+
+    function deleteProductById($id){
+        return $this->executeQuery("DELETE FROM ".TBL_PRODUCT." WHERE productId = ".addslashes($id));
+    }
+
+    // count product search wise
+    function countSearchWiseProduct($sql){
+
+        // $Query = "SELECT COUNT(tp.productName) AS total_product FROM ";
+        // $ENTITY = $Query."".TBL_PRODUCT_TYPE. " tpType INNER JOIN ".TBL_PRODUCT." tp ON (tpType.categoryId = tp.typeId) $sql";
+
+        $ENTITY = TBL_PRODUCT_TYPE. " tpType INNER JOIN ".TBL_PRODUCT." tp ON (tpType.categoryId = tp.typeId)";
+
+        // echo $ENTITY; exit;
+        return $this->rowCount($ENTITY,"tp.productName",$sql);
     }
 }

@@ -1,5 +1,5 @@
 <?php defined('BASE') OR exit('No direct script access allowed.');
-class PapermaterialModel extends Site
+class HoldstockModel extends ContentModel
 {
     function searchLinkedPages($mid, $parent_dir, $srch, $start, $limit)
     {
@@ -21,36 +21,5 @@ class PapermaterialModel extends Site
         }
 
         return $data;
-    }
-
-    function materialCount($ExtraQryStr) {
-        return $this->rowCount(TBL_PRODUCT_MATERIAL, "mtId", $ExtraQryStr);
-    }
-
-    function getMaterialByLimit($ExtraQryStr, $start, $limit) {
-        $ExtraQryStr .= " ORDER BY displayOrder ASC";
-        return $this->selectMulti(TBL_PRODUCT_MATERIAL, "*", $ExtraQryStr, $start, $limit);
-    }
-
-    function checkMaterialExistence($ExtraQryStr) {
-        return $this->selectSingle(TBL_PRODUCT_MATERIAL, "*", $ExtraQryStr);
-    }
-
-    function materialUpdatedById($data,$id){
-        $query = "mtId = ".addslashes($id);
-        return $this->updateQuery(TBL_PRODUCT_MATERIAL, $data, $query);
-    }
-
-    function insertData($data){
-        return $this->insertQuery(TBL_PRODUCT_MATERIAL,$data);
-    }
-
-    function checkExistsAnother($Entity, $Fields, $ExtraQryStr) {
-        return $this->rowCount($Entity, $Fields, $ExtraQryStr);
-    }
-
-    function materialDeletebyId($id){
-        $sql = "DELETE FROM ".TBL_PRODUCT_MATERIAL." WHERE mtId = ".addslashes($id)."";
-        return $this->executeQuery($sql);
     }
 }

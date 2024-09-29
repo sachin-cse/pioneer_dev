@@ -14,51 +14,34 @@ class ProductlistController extends REST
     }
 
     function index($act = []) {
+        $flag = false;
         $settings                               = $this->model->settings($this->_request['pageType']);
         $this->response['settings']             = unserialize($settings['value']);
 
         $ExtraQryStr                        = 1;
 
         // SEARCH START --------------------------------------------------------------
-        if(isset($this->_request['searchText']))
+        if(isset($this->_request['searchText'])){
             $this->session->write('searchText', $this->_request['searchText']);
+        }
 
-        if($this->session->read('searchText'))
-            $ExtraQryStr        .= " AND projectName LIKE '%".addslashes($this->session->read('searchText'))."%'";
+        if($this->session->read('searchText')){
+            $flag = true;
+            $ExtraQryStr        = "categoryName LIKE '%".addslashes($this->session->read('searchText'))."%'";
+            $sql = "tpType.categoryName LIKE '%".addslashes($this->session->read('searchText'))."%' AND tpType.status = 'Y' AND tpType.parentId >= 0 ORDER BY tpType.displayOrder";
+            $this->response['countSearchWiseProduct'] = $this->model->countSearchWiseProduct($sql);
+        }
 
-        if(isset($this->_request['searchStatus']))
-            $this->session->write('searchStatus', $this->_request['searchStatus']);
-
-        if($this->session->read('searchStatus'))
-            $ExtraQryStr        .= " AND status = '".addslashes($this->session->read('searchStatus'))."'";
-
-        if(isset($this->_request['searchGSM']))
-            $this->session->write('searchGSM', $this->_request['searchGSM']);
-
-        if($this->session->read('searchGSM'))
-            $ExtraQryStr        .= " AND isShowcase = '".addslashes($this->session->read('searchShowcase'))."'";
-
-        if(isset($this->_request['searchType']))
-            $this->session->write('searchType', $this->_request['searchType']);
-
-        if($this->session->read('searchType'))
-            $ExtraQryStr        .= " AND menucategoryId = ".addslashes($this->session->read('searchPage'));
-
-        if(isset($this->_request['searchSize']))
-            $this->session->write('searchSize', $this->_request['searchSize']);
-
-        if($this->session->read('searchSize'))
-            $ExtraQryStr        .= " AND menucategoryId = ".addslashes($this->session->read('searchPage'));
 
         if(isset($this->_request['Reset']) || isset($this->_request['Search'])) {
 
             if(isset($this->_request['Reset'])){
-
+                $flag = false;
                 $this->session->write('searchText',     '');
-                $this->session->write('searchStatus',   '');
-                $this->session->write('searchGSM',      '');
-                $this->session->write('searchType',     '');
-                $this->session->write('searchSize',     '');
+                // $this->session->write('searchStatus',   '');
+                // $this->session->write('searchGSM',      '');
+                // $this->session->write('searchType',     '');
+                // $this->session->write('searchSize',     '');
             }
 
             $this->model->redirectToUrl(SITE_ADMIN_PATH.'/index.php?pageType='.$this->_request['pageType'].'&dtls='.$this->_request['dtls'].'&moduleId='.$this->_request['moduleId']);
@@ -71,7 +54,7 @@ class ProductlistController extends REST
             $start                              = $p->findStart($this->response['limit'], $this->_request['page']);
             $pages                              = $p->findPages($this->response['rowCount'], $this->response['limit']);
 
-            $this->response['products']         = $this->model->getProductCategoriwiseByLimit($ExtraQryStr, $start, $this->response['limit']);
+            $this->response['products']         = $this->model->getProductCategoriwiseByLimit($ExtraQryStr, $ExtraQryStr1, $start, $this->response['limit'], $flag);
 
             if($this->response['rowCount'] > 0 && ceil($this->response['rowCount'] / $this->response['limit']) > 1) {
                 $this->response['page']         = ($this->_request['page']) ? $this->_request['page'] : 1;
@@ -139,7 +122,7 @@ class ProductlistController extends REST
         if($GSMID != '' && $TypeID != '' && $SizeID != '' && $productName != '' && $piecesPerBag != '' && $stockAlertQty != '') {
 
             if($IdToEdit!= '')
-                $sel_ContentDetails = $this->model->checkExistence("(gsmId = '".addslashes($GSMID)."' AND sizeId = '".addslashes($SizeID)."' AND typeId = '".addslashes($TypeID)."') OR (productName = '".addslashes($productName)."') AND productId != ".$IdToEdit);
+                $sel_ContentDetails = $this->model->checkExistence("(gsmId = '".addslashes($GSMID)."' AND sizeId = '".addslashes($SizeID)."' AND typeId = '".addslashes($TypeID)."' AND productId != '".$IdToEdit."') OR (productName = '".addslashes($productName)."') AND productId != ".$IdToEdit);
             else
                 $sel_ContentDetails = $this->model->checkExistence("(gsmId = '".addslashes($GSMID)."' AND sizeId = '".addslashes($SizeID)."' AND typeId = '".addslashes($TypeID)."') OR (productName = '".addslashes($productName)."') ");
 
@@ -186,26 +169,36 @@ class ProductlistController extends REST
     }
 
     function multiAction() {
+
         $actMsg['type']           = 0;
         $actMsg['message']        = '';
 
-        if($this->_request['multiAction']){
-            foreach($this->_request['selectMulti'] as $val) {
-                $params = array();
-                switch($this->_request['multiAction']) {
-                    case "1":
-                        $params['status']       = 'Y';
-                        break;
-                    case "2":
-                        $params['status']       = 'N';
-                        break;
-                    default:
-                        $this->response('', 406);
-                }
+        if($this->_request['multiAction'] == ''){
+            $actMsg['message']        = 'Please select an option';
+        }
 
-                $this->model->updProduct($params, $val);
-                $actMsg['type']           = 1;
-                $actMsg['message']        = 'Operation successful.';
+        if($this->_request['multiAction']){
+
+            if(!empty($this->_request['selectMulti'])){
+                foreach($this->_request['selectMulti'] as $val) {
+                    $params = array();
+                    switch($this->_request['multiAction']) {
+                        case "1":
+                            $params['status']       = 'Y';
+                            break;
+                        case "2":
+                            $params['status']       = 'N';
+                            break;
+                        default:
+                            $this->response('', 406);
+                    }
+    
+                    $this->model->updProduct($params, $val);
+                    $actMsg['type']           = 1;
+                    $actMsg['message']        = 'Operation successful.';
+                }
+            }else{
+                $actMsg['message']        = 'Please check at least one checkbox';
             }
         }   
         
@@ -444,4 +437,31 @@ class ProductlistController extends REST
 
         return $actMsg;
     }
+
+    // delete single product
+    function singleDeleteProduct(){
+        $actMsg['type'] = '';
+        $actMsg['message'] = '';
+        if(!empty($this->_request['id'])){
+            // check Existance
+            $productId = $this->_request['id'];
+            $ExtraQryStr = " productId = ".addslashes($productId)."";
+            $checkExistance = $this->model->productCount($ExtraQryStr);
+
+            if($checkExistance >= 1){
+                $actMsg['type'] = 1;
+                $actMsg['message'] = 'Product Delete Successfully';
+                $this->model->deleteProductById($productId);
+            }else{
+                $actMsg['type'] = 2;
+                $actMsg['message'] = 'Product id does not exist';
+            }
+        }else{
+            $actMsg['type'] = 3;
+            $actMsg['message'] = 'Something Went Wrong';
+        }
+
+        return $actMsg;
+    }
+
 }

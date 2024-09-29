@@ -13,7 +13,7 @@
 
                             <div class="form-group">
                                 <select name="sltVendor" id="sltVendor" class="form-control">
-                                    <option value="">Select Vendor</option>
+                                    <option value="">Vendor</option>
                                     <?php 
                                     if(is_array($data['vendors']) && count($data['vendors']) > 0) {
                                         foreach($data['vendors'] as $item) {
@@ -63,7 +63,7 @@
                                                     </tr>
                                                 </thead>
                                                 <?php $slNo = ($this->_request['page'] > 1) ? (($this->_request['page'] - 1) * $data['limit']) + 1 : 1;  ?>
-                                                <tbody class="swap">
+                                                <tbody>
                                                     <?php foreach($data['products'] as $item) { if(!empty($item['categoryProduct']) || !empty($item['subCat'])) { ?>
                                                     <tr>
                                                         <td colspan="7" style="text-align: left;"><strong><?php echo $item['categoryName']; ?></strong></td></td>
@@ -153,7 +153,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <select name="sltVendor" id="sltVendor" class="form-control">
-                                            <option value="">Select Vendor</option>
+                                            <option value="">Vendor</option>
                                             <?php 
                                             if(is_array($data['vendors']) && count($data['vendors']) > 0) {
                                                 foreach($data['vendors'] as $item) {
@@ -166,7 +166,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input type="date" name="purchaseDate" class="form-control hasDatepicker" value="<?php echo date('d-m-Y'); ?>">
+                                        <input type="text" id="datepicker" value="<?php echo date('d-m-Y'); ?>" readonly="readonly" name="purchaseDate" class="date" placeholder="Select Date">
                                     </div>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <select name="sltSize" id="sltSize" class="form-control">
-                                            <option value="">Select Size</option>
+                                            <option value="">Size</option>
                                             <?php 
                                                 if(is_array($data['productSize']) && count($data['productSize']) > 0) {
                                                     foreach($data['productSize'] as $item) {
@@ -209,14 +209,14 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <select name="sltGSM" id="sltGSM" class="form-control">
-                                            <option value="">Select GSM</option>
+                                            <option value="">GSM</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                     <select name="sltType" id="sltCategory" class="form-control">
-                                        <option value="">Select Category</option>
+                                        <option value="">Category</option>
                                     </select>
                                     </div>
                                 </div>

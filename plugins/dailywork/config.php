@@ -14,5 +14,6 @@ $dbArr = array(
         "TBL_TEMP_DAILY_WORK"           => "tbl_temp_daily_work",
         "TBL_DAILY_WORK"                => "tbl_daily_work",
         "TBL_PACKAGING"                 => "tbl_packaging",
-        "TBL_UNPACKING_PRODUCT"         => "tbl_unpacking_produuct"
+        "TBL_PRODUCT_AVAILABLR_STOCK"   => "tbl_product_stock",
+        "TBL_READY_PRODUCT"             => "tbl_ready_product"
 );

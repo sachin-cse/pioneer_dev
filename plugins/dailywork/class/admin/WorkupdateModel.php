@@ -4,12 +4,11 @@ class WorkupdateModel extends ContentModel
     function searchLinkedPages($mid, $parent_dir, $srch, $start, $limit)
     {
         if ($mid == 0) {
-
+            
 
             $ENTITY      = TBL_MENU_CATEGORY . " mc JOIN " . TBL_MODULE . " m ON (m.menu_id = mc.moduleId)";
 
             $ExtraQryStr = "mc.categoryName like '%" . addslashes($srch) . "%' AND mc.status = 'Y' AND m.parent_dir = '" . addslashes($parent_dir) . "' AND m.child_dir = '' ORDER BY mc.displayOrder";
-
             $data = $this -> selectMulti($ENTITY, "mc.categoryId id, mc.categoryName page, mc.permalink", $ExtraQryStr, $start, $limit);
 
         } else {
@@ -24,9 +23,10 @@ class WorkupdateModel extends ContentModel
         return $data;
     }
 
-    function getWorkUpdate($ExtraQryProStr = '', $ExtraQryStrS = '', $purchaseDate = '',  $start, $limit) {
 
-        $ExtraQryStr = " 1 ORDER BY tp.entryDate";
+    function getWorkUpdate($ExtraQryProStr = '', $ExtraQryStrS = '', $purchaseDate = '',  $start, $limit, $workDate) {
+
+        $ExtraQryStr = " workUpdateDate = '".$workDate."' AND 1 ORDER BY tp.entryDate DESC";
 
         $ENTITY = TBL_DAILY_WORK. " tp INNER JOIN ".TBL_PRODUCT_SIZE." tps ON (tp.sizeId = tps.sizeId) 
                         INNER JOIN ".TBL_PRODUCT_GSM." tpg ON (tp.gsmId = tpg.gsmId) 
@@ -38,6 +38,15 @@ class WorkupdateModel extends ContentModel
 
         return $productType;
 
+    }
+
+    function getLastWorkingDate()
+    {
+        $ExtraQryStrNew = " 1 ORDER BY workUpdateDate DESC";
+
+        $workingDate = $this->selectSingle(TBL_DAILY_WORK, "*", $ExtraQryStrNew);
+    
+        return $workingDate;
     }
 
     // function getWorkUpdate1($ExtraQryProStr = '', $ExtraQryStrS = '', $purchaseDate = '',  $start, $limit) {
@@ -205,18 +214,18 @@ class WorkupdateModel extends ContentModel
     }
 
     function getPaperGSMById($sizeId) {
-        $ENTITY = TBL_PRODUCT. " tp INNER JOIN ".TBL_PRODUCT_GSM." tpg ON (tp.gsmId = tpg.gsmId)";
+        $ENTITY = TBL_PRODUCT. " tp INNER JOIN ".TBL_PRODUCT_GSM." tpg ON (tp.gsmId = tpg.gsmId) INNER JOIN ".TBL_PRODUCT_AVAILABLR_STOCK." tas ON (tp.productId = tas.productId)";
 
-        $ExtraQryStr = "tp.sizeId = '".$sizeId."'  AND tp.status = 'Y' GROUP BY tpg.gsmId ORDER BY tpg.gsmName";
+        $ExtraQryStr = "tp.sizeId = '".$sizeId."' AND tp.status = 'Y' AND tas.inStock != 0 GROUP BY tpg.gsmId ORDER BY tpg.gsmName";
 
         return $this->selectAll($ENTITY, "tpg.gsmName, tpg.gsmId ", $ExtraQryStr);
     }
 
     function getPaperTypeByGsm($sizeId, $gsmId) {
 
-        $ENTITY = TBL_PRODUCT. " tp INNER JOIN ".TBL_PRODUCT_TYPE." tpy ON (tp.typeId = tpy.categoryId)";
+        $ENTITY = TBL_PRODUCT. " tp INNER JOIN ".TBL_PRODUCT_TYPE." tpy ON (tp.typeId = tpy.categoryId) INNER JOIN ".TBL_PRODUCT_AVAILABLR_STOCK." tas ON (tp.productId = tas.productId)";
 
-        $ExtraQryStr = "tp.sizeId = '".$sizeId."' AND tp.gsmId = '".$gsmId."' AND tp.status = 'Y' GROUP BY tpy.categoryId ORDER BY tpy.categoryName";
+        $ExtraQryStr = "tp.sizeId = '".$sizeId."' AND tp.gsmId = '".$gsmId."' AND tp.status = 'Y' AND tas.inStock != 0 GROUP BY tpy.categoryId ORDER BY tpy.categoryName";
 
         $productType = $this->selectAll($ENTITY, "tpy.categoryId, tpy.categoryName ", $ExtraQryStr);
 
@@ -264,6 +273,19 @@ class WorkupdateModel extends ContentModel
         return $this->rowCount($ENTITY, "tts.tempId", $ExtraQryStr);
     }
 
+    function checkAvailableStockData($ExtraQryStr) {
+
+        $ENTITY = TBL_PRODUCT . " tp LEFT JOIN " . TBL_PRODUCT_GSM . " tpg ON (tp.gsmId = tpg.gsmId) 
+        LEFT JOIN " . TBL_PRODUCT_TYPE . " tpt ON (tp.typeId = tpt.categoryId) LEFT JOIN " . TBL_PRODUCT_SIZE . " tps ON (tp.sizeId = tps.sizeId)";
+
+        $getProduct =  $this->selectSingle($ENTITY, "tp.productId", $ExtraQryStr);
+
+        $ENTITY = TBL_PRODUCT_AVAILABLR_STOCK ." tas";
+        $ExtraQryStr = "tas.productId = ".$getProduct['productId']." ";
+
+        return $this->selectSingle($ENTITY, "tas.*", $ExtraQryStr);
+    }
+
     function insTemp($params) {
         return $this->insertQuery(TBL_TEMP_DAILY_WORK, $params);
     }
@@ -281,6 +303,7 @@ class WorkupdateModel extends ContentModel
     }
 
     function insPurchaseStock($params) {
+        print_r($params); exit;
         return $this->insertQuery(TBL_DAILY_WORK, $params);
     }
 
@@ -293,6 +316,101 @@ class WorkupdateModel extends ContentModel
     }
 
     function search($ExtraQryStr){
-        return $this->selectAll(TBL_DAILY_WORK,'*',$ExtraQryStr);
+        $ENTITY = TBL_DAILY_WORK. " tp INNER JOIN ".TBL_PRODUCT_SIZE." tps ON (tp.sizeId = tps.sizeId) 
+                        INNER JOIN ".TBL_PRODUCT_GSM." tpg ON (tp.gsmId = tpg.gsmId) 
+                        INNER JOIN ".TBL_PRODUCT_TYPE." tpt ON (tp.typeId = tpt.categoryId)
+                        INNER JOIN ".TBL_END_PRODUCT." tep ON (tp.endproductId = tep.epId)
+                        ";
+        return $this->selectAll($ENTITY,'tps.*, tp.*, tpg.*, tpt.*, tep.*',$ExtraQryStr);
     }
+
+
+    function getLastWrokingDate(){
+
+        $ExtraQryStrNew = "1 ORDER BY entryDate DESC";
+
+        return $this->selectSingle(TBL_DAILY_WORK, "entryDate", $ExtraQryStrNew);
+    }
+
+    function checkInUnpackingTable($ExtraQryStr){
+        return $this->rowCount(TBL_UNPACKING_PRODUCT, 'id ', $ExtraQryStr);
+    }
+
+    function updateUnpackingData($workQuantity, $query){
+        return $this->executeQuery("UPDATE ".TBL_UNPACKING_PRODUCT." SET totalQty = totalQty + $workQuantity ,modifiedDate = NOW() WHERE $query");
+    }
+
+    function insPackingData($newParams){
+        return $this->insertQuery(TBL_UNPACKING_PRODUCT,$newParams);
+    }
+
+    function updateProductAvlStock($upparams) {
+
+        $ENTITY = TBL_PRODUCT ." tts";
+        $ExtraQryStr            = "tts.sizeId = ".addslashes($upparams['sizeId'])." AND tts.gsmId = ".addslashes($upparams['gsmId'])." AND tts.typeId = ".addslashes($upparams['typeId'])."";
+
+        $productInfo = $this->selectSingle($ENTITY, "tts.productId", $ExtraQryStr);
+        
+        $ENTITY = TBL_PRODUCT_AVAILABLR_STOCK ." pas";
+        $ExtraQryStr = "pas.productId = ".$productInfo['productId']." ";
+
+        $getStockAmnt = $this->selectAll($ENTITY, "pas.*", $ExtraQryStr);
+
+        $total = 0;
+
+        foreach($getStockAmnt as $amnt)
+        {
+            $total = $total + $amnt['inStock'];
+        }
+
+        $newParam['inStock'] = ($total - $upparams['totalQty']);
+
+        $CLAUSE = "productId = ".addslashes($productInfo['productId']);
+
+        return $this->updateQuery(TBL_PRODUCT_AVAILABLR_STOCK, $newParam, $CLAUSE);
+    }
+
+    function getStockAmountCheck($gsmId, $sizeId, $typeId){
+
+        $ENTITY = TBL_PRODUCT ." tts";
+        $ExtraQryStr            = "tts.sizeId = ".addslashes($sizeId)." AND tts.gsmId = ".addslashes($gsmId)." AND tts.typeId = ".addslashes($typeId)."";
+
+        $productInfo = $this->selectSingle($ENTITY, "tts.productId", $ExtraQryStr);
+
+        $ENTITYF = TBL_PRODUCT_AVAILABLR_STOCK ." pas";
+        $ExtraQryStrF            = "pas.productId = ".addslashes($productInfo['productId'])." ";
+
+        return $this->selectSingle($ENTITYF, "pas.inStock", $ExtraQryStrF);
+    }
+
+    function getProductId($gsmId, $sizeId, $typeId)
+    {
+        $ENTITY = TBL_PRODUCT ." tts";
+        $ExtraQryStr            = "tts.sizeId = ".addslashes($sizeId)." AND tts.gsmId = ".addslashes($gsmId)." AND tts.typeId = ".addslashes($typeId)."";
+
+        return $this->selectSingle($ENTITY, "tts.productId", $ExtraQryStr);
+    }
+
+    // check daily work
+    function checkExistancedailyWork($query){
+        $ENTITY = TBL_DAILY_WORK; 
+        return $this->rowCount($ENTITY, 'id', $query);
+    }
+
+    // if exist update daily work
+    function insPurchaseStockUpdate($params){
+        return $this->executeQuery("UPDATE ".TBL_DAILY_WORK." SET addedQty = addedQty+".$params['addedQty']." WHERE endproductId = ".$params['endproductId']." AND gsmId = ".$params['gsmId']." AND sizeId = ".$params['sizeId']." AND typeId = ".$params['typeId']."");
+
+    }
+
+    function getWorkupdateEditById($id){
+        $ENTITY = TBL_DAILY_WORK. " tp INNER JOIN ".TBL_PRODUCT_SIZE." tps ON (tp.sizeId = tps.sizeId) 
+                        INNER JOIN ".TBL_PRODUCT_GSM." tpg ON (tp.gsmId = tpg.gsmId) 
+                        INNER JOIN ".TBL_PRODUCT_TYPE." tpt ON (tp.typeId = tpt.categoryId)
+                        INNER JOIN ".TBL_END_PRODUCT." tep ON (tp.endproductId = tep.epId)
+                        ";
+        $ExtraQuery = "tp.id = ".$id."";
+        return $this->selectSingle($ENTITY, '*', $ExtraQuery);
+    }
+
 }

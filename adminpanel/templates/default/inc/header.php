@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="<?php echo ADMIN_TMPL_PATH;?>/css/helper.css">
     <link rel="stylesheet" href="<?php echo ADMIN_TMPL_PATH;?>/css/toastr.min.css">
     <link rel="stylesheet" href="<?php echo ADMIN_TMPL_PATH;?>/css/sweetalert.css">
+    <link rel="stylesheet" href="<?php echo ADMIN_TMPL_PATH;?>/css/select2.min.css">
     <link rel="stylesheet" href="<?php echo ADMIN_TMPL_PATH;?>/css/style.css">
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

@@ -8,6 +8,10 @@ $(function () {
         i.stopPropagation();
     });
 
+    $(".selectpiker").select2({
+        tags: false,
+        theme: "bootstrap",
+     });
 
     var i = function () {
         (window.innerWidth > 0 ? window.innerWidth : this.screen.width) < 1170 ? ($("body").addClass("mini-sidebar"),

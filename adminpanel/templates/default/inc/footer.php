@@ -7,6 +7,9 @@
     <!-- End Wrapper -->
    
     <!-- Bootstrap tether Core JavaScript -->
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script> -->
+
     <script src="<?php echo ADMIN_TMPL_PATH;?>/js/lib/popper.min.js"></script>
     <script src="<?php echo ADMIN_TMPL_PATH;?>/js/lib/bootstrap.min.js"></script>
     <!-- slimscrollbar scrollbar JavaScript -->
@@ -28,6 +31,8 @@
 
     <script src="<?php echo ADMIN_TMPL_PATH;?>/js/lib/Chart.bundle.js"></script>
     <script src="<?php echo ADMIN_TMPL_PATH;?>/js/lib/toastr.init.js"></script>
+
+    <script src="<?php echo ADMIN_TMPL_PATH;?>/js/select2.min.js"></script>
 
     <script src="<?php echo ADMIN_TMPL_PATH;?>/js/scripts.js"></script>
     <script src="<?php echo ADMIN_TMPL_PATH;?>/js/custom.js"></script>

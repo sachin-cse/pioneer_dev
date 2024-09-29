@@ -15,23 +15,42 @@ class PapertypeController extends REST
 
     function index($act = []) {
 
-
         //var_dump($this->session->read('UID'));
+
+        $parentId = isset($_GET['parentId']) ? $_GET['parentId'] : 0;
+
+        if(isset($this->_request['Reset'])){
+            $this->session->write('searchText','');
+            $this->model->redirectToUrl(SITE_ADMIN_PATH.'/index.php?pageType='.$this->_request['pageType'].'&dtls='.$this->_request['dtls'].'&moduleId='.$this->_request['moduleId']);
+        }
             
         $this->response['linkedPages']          = $this->model->getLinkedPages($this->_request['pageType'], 0, 100);
             
         $settings                               = $this->model->settings($this->_request['pageType']);
         $this->response['settings']             = unserialize($settings['value']);
         
+        if(!empty($this->_request['searchText'])){
+            $this->session->write('searchText', $this->_request['searchText']);
+            $ExtraQryStr = " tpc.parentId=".addslashes($parentId)." AND tpc.categoryName LIKE '%".addslashes($this->_request['searchText'])."%'";
+        } else {
+            $this->session->write('searchText','');
+            $ExtraQryStr  = (!$this->_request['parentId']) ? "tpc.parentId = 0" : "tpc.parentId = ".addslashes($this->_request['parentId']);
+        }
+
+        if($parentId != 0){
+            $pId = $parentId;
+            $this->response['getCategoryName'] = $this->model->getCategoryName($pId);
+        }
+
+
+
         if(isset($this->_request['editid']) || isset($act['editid']) || $this->_request['dtaction'] == 'add') {
-            
+
             $editid = ($this->_request['editid'])? $this->_request['editid'] : $act['editid'];
             
             if($editid) {
                 $this->response['record']       = $this->model->categoryById($editid);
             }
-
-            $ExtraQryStr  = (!$this->_request['parentId']) ? "tpc.parentId = 0" : "tpc.parentId = ".addslashes($this->_request['parentId']);
 
             $this->response['rowCount']     = $this->model->categoryCount($ExtraQryStr);
             
@@ -43,7 +62,9 @@ class PapertypeController extends REST
                 $start                      = $p->findStart($this->response['limit'], $this->_request['page']);
                 $pages                      = $p->findPages($this->response['rowCount'], $this->response['limit']);
 
+
                 $this->response['records']      = $this->model->getCategoryByLimit($ExtraQryStr, $start, $this->response['limit']);
+
 
                 if($this->response['rowCount'] > 0 && ceil($this->response['rowCount'] / $this->response['limit']) > 1) {
                     $this->response['page']      = ($this->_request['page']) ? $this->_request['page'] : 1;
@@ -55,10 +76,9 @@ class PapertypeController extends REST
             
         }
         else {
-
             //echo $this->session->read('UID'); exit;
-            
-            $ExtraQryStr  = (!$this->_request['parentId']) ? "tpc.parentId = 0" : "tpc.parentId = ".addslashes($this->_request['parentId']);
+
+            // $ExtraQryStr  = (!$this->_request['parentId']) ? "tpc.parentId = 0" : "tpc.parentId = ".addslashes($this->_request['parentId']);
 
             $this->response['rowCount']     = $this->model->categoryCount($ExtraQryStr);
             //echo $this->response['rowCount']; exit;
@@ -80,7 +100,6 @@ class PapertypeController extends REST
                 }
             }
         }
-        
         return $this->response;
     }
 
@@ -103,7 +122,6 @@ class PapertypeController extends REST
     
     function addEditCategory(){
 
-        //echo 1; exit;
         
         $actMsg['type']             = 0;
         $actMsg['message']          = '';
@@ -180,6 +198,7 @@ class PapertypeController extends REST
            $actMsg['message']        = 'Fields marked with (*) are mandatory.';
         
 		return $actMsg;
+
     }
 
     
@@ -230,47 +249,84 @@ class PapertypeController extends REST
     function multiAction() {
         $actMsg['type']           = 0;
         $actMsg['message']        = '';
+        $i=0;
+
+        if($this->_request['multiAction'] == ''){
+            $actMsg['message']        = 'Please select an option';
+        }
         
         if($this->_request['multiAction']){
-            foreach($this->_request['selectMulti'] as $val) {
+
+            if(!empty($this->_request['selectMulti'])){
+                foreach($this->_request['selectMulti'] as $val) {
                 
-                $params = array();  
-                
-                switch($this->_request['multiAction']) {
-                    case "1":
-                        $params['status'] = 'Y';
-                        break;
-                    case "2":
-                        $params['status'] = 'N';
-                        break;
-                    case "3":
-                        $params['delete'] = 'Y';
-                        break;
-                    case "4":
-                        $params['isShowcase']   = 'Y';
-                        break;
-                    case "5":
-                        $params['isShowcase']   = 'N';
-                        break;
-                    default:
-                        $this->response('', 406);
-                } 
-                
-                if($params['delete'] == 'Y') {
-                    $selData = $this->model->categoryById($val);
-                    if($selData['categoryImage']) {
-                        @unlink(MEDIA_FILES_ROOT.DS.$this->_request['pageType'].DS.'normal'.DS.$selData['categoryImage']);
-                        @unlink(MEDIA_FILES_ROOT.DS.$this->_request['pageType'].DS.'thumb'.DS.$selData['categoryImage']);
-                        @unlink(MEDIA_FILES_ROOT.DS.$this->_request['pageType'].DS.'large'.DS.$selData['categoryImage']);
+                    $params = array();  
+                    
+                    switch($this->_request['multiAction']) {
+                        case "1":
+                            $params['status'] = 'Y';
+                            break;
+                        case "2":
+                            $params['status'] = 'N';
+                            break;
+                        case "3":
+                            $params['delete'] = 'Y';
+                            break;
+                        case "4":
+                            $params['isShowcase']   = 'Y';
+                            break;
+                        case "5":
+                            $params['isShowcase']   = 'N';
+                            break;
+                        default:
+                            $this->response('', 406);
+                    } 
+                    
+                    if($params['delete'] == 'Y') {
+                        $selData = $this->model->categoryById($val);
+                        if($selData['categoryImage']) {
+                            @unlink(MEDIA_FILES_ROOT.DS.$this->_request['pageType'].DS.'normal'.DS.$selData['categoryImage']);
+                            @unlink(MEDIA_FILES_ROOT.DS.$this->_request['pageType'].DS.'thumb'.DS.$selData['categoryImage']);
+                            @unlink(MEDIA_FILES_ROOT.DS.$this->_request['pageType'].DS.'large'.DS.$selData['categoryImage']);
+                        }
+
+                        $checkProductExist = $this->model->checkProductExist($val);
+
+                        if((count($this->_request['selectMulti']) == 1) && $checkProductExist){
+                            $actMsg['message'] = "Sorry We Can't delete this category";
+                            break;
+                        }
+                        // $val = (count($checkProductExist['stockAlertQty'])??0) <= 0?'sdwe':'adwsf';
+    
+                        // echo $val; exit;
+    
+                        // echo $val;
+                        // print_r(count($checkProductExist) < 0 && !array_key_exists($checkProductExist['stockAlertQty'],$checkProductExist));
+    
+                        if((($checkProductExist['stockAlertQty']??0) <= 0) && (!array_key_exists($checkProductExist['stockAlertQty'],$checkProductExist))){
+                            $this->model->deleteCategoryBycategoryId($val);
+                            $actMsg['type']           = 1;
+                            $actMsg['message']        = 'Data Deleted successfully';
+                        }else{
+                            $i+=1;
+                        }
+    
+                        if($i > 0){
+                            $actMsg['type']           = 1;
+                            $actMsg['message']        = 'Data deleted partially successfully';
+                        }
+                                        
                     }
-                                    
-                    $this->model->deleteCategoryBycategoryId($val);
+                    else{
+                        $this->model->updateCategoryBycategoryId($params, $val);
+                    
+                        $actMsg['type']           = 1;
+                        $actMsg['message']        = 'Status Update successfully';
+                    }
                 }
-                else
-                    $this->model->updateCategoryBycategoryId($params, $val);
-                
-                $actMsg['type']           = 1;
-                $actMsg['message']        = 'Operation successful.';
+
+            }else{
+                $actMsg['message']        = 'Please check at least one checkbox';
             }
         }
         

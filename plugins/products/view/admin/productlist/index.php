@@ -26,7 +26,8 @@ else {
 
 	$qrystrPermalink			    = 1;
 }
-//showArray($data['productSize']);
+
+// echo $data['countSearchWiseProduct'];
 ?>
 <div class="container-fluid">
     <?php
@@ -41,9 +42,11 @@ else {
                     <form name="searchForm" action="" method="post">
                         <div class="form-inline">
                             <div class="form-group">
-                                <input type="text" name="searchText" value="<?php echo $this->session->read('searchText');?>" placeholder="Search" class="form-control">
+                                <input type="text" name="searchText" value="<?=$this->session->read('searchText')??''?>" placeholder="Search By Category Name" class="form-control">
                             </div>
                             
+                            <?php 
+                            /*
                             <div class="form-group">
                                 <select name="searchStatus" class="form-control">
                                     <option value="">Status</option>
@@ -51,7 +54,10 @@ else {
                                     <option value="N" <?php if ($this->session->read('searchStatus') == 'N') echo 'selected';?>>Inactive</option>
                                 </select>
                             </div>
+                            */?>
 
+                        <?php 
+                        /*
                             <div class="form-group">
                                 <select name="searchSize" id="searchSize" class="form-control">
                                     <option value="">Select Size</option>
@@ -64,8 +70,10 @@ else {
                                     ?>
                                 </select>
                             </div>
+                            */
+                        ?>
                             
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <select name="searchGSM" id="searchGSM" class="form-control">
                                     <option value="">Select GSM</option>
                                 </select>
@@ -75,7 +83,7 @@ else {
                                 <select name="searchType" id="searchType" class="form-control">
                                     <option value="">Select Category</option>
                                 </select>
-                            </div>
+                            </div> -->
                             
                             <div class="form-group">
                                 <button type="submit" name="Search" class="btn btn-info width-auto"><i class="fa fa-search"></i></button>
@@ -96,7 +104,8 @@ else {
                                         if($data['products']) {
                                             //showArray($data['products']);
                                             ?>
-                                            <div class="alert alert-success">Records Found: <?php echo $data['rowCount'];?></div>
+                                            
+                                            <div class="alert alert-success">Records Found: <?php echo array_key_exists("countSearchWiseProduct",$data) ? $data['countSearchWiseProduct']:$data['rowCount']; ?></div>
                                             <table class="table table-hover">
                                                 <thead>
                                                     <tr>
@@ -109,7 +118,7 @@ else {
                                                     </tr>
                                                 </thead>
                                                 <?php $slNo = ($this->_request['page'] > 1) ? (($this->_request['page'] - 1) * $data['limit']) + 1 : 1;  ?>
-                                                <tbody class="swap">
+                                                <tbody>
                                                     <?php foreach($data['products'] as $item) { if(!empty($item['categoryProduct']) || !empty($item['subCat'])) { ?>
                                                     <tr>
                                                         <td colspan="7" style="text-align: left;"><strong><?php echo $item['categoryName']; ?></strong></td></td>
@@ -120,7 +129,7 @@ else {
                                                             <?php
                                                             $count = 1;
                                                             foreach($citem['categoryProduct'] as $citemData) { ?>
-                                                                <td><?php echo $citemData['productName']; ?></td>
+                                                                <td><a href="index.php?pageType=<?php echo $this->_request['pageType'];?>&dtls=<?php echo $this->_request['dtls'];?>&editid=<?php echo $citemData['productId'];?>&moduleId=<?php echo $this->_request['moduleId'];?>"><?php echo $citemData['productName']; ?></a></td>
                                                                 <td><?php echo $citemData['sizeName']; ?></td>
                                                                 <td><?php echo $citemData['gsmName']; ?></td>
                                                                 <td><?php echo $citemData['stockAlertQty']; ?> kgs</td>
@@ -160,7 +169,7 @@ else {
                                 <div class="card m-t-20">
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-sm-5 pull-right">
+                                            <!-- <div class="col-sm-5 pull-right">
                                                 <div class="last_li form-inline">
                                                     <select name="multiAction" class="form-control multi_action">
                                                         <option value="">Select</option>
@@ -170,7 +179,7 @@ else {
                                                     <input type="hidden" name="SourceForm" value="multiAction">
                                                     <button type="submit" name="Save" value="Apply" class="btn btn-info m-l-10">Apply</button>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <?php
                                             if($data['pageList']){
                                                 echo '<div class="col-sm-7">';
@@ -274,15 +283,28 @@ else {
 
                             </div>
                             
-                            <div class="form-group">
-                                <input type="hidden" name="IdToEdit" value="<?php echo $IdToEdit;?>" />
+                            <div class="form-group d-flex justify-content-between">
+                                <input type="hidden"  name="IdToEdit" value="<?php echo $IdToEdit;?>" />
                                 <input type="hidden" name="SourceForm" value="addEditProduct" />
                                 <button type="submit" name="Save" value="Save" class="btn btn-info login_btn mb-2"><?php echo ($IdToEdit != '' ? 'UPDATE' : 'ADD'); ?></button>
+
+
+                                <?php 
+                                if($IdToEdit != ''){
+                                    ?>
+                                <div class="trash_bx_ico">
+                                    <input type="button" data-moduleId="<?php echo $this->_request['moduleId']; ?>" data-id="<?php echo $IdToEdit; ?>"  class="btn btn-danger login_btn mb-2 delete_product" ><i class="fa fa-trash trash_position" aria-hidden="true" data-moduleId="<?php echo $this->_request['moduleId']; ?>" data-id="<?php echo $IdToEdit; ?>"></i>
+                                </div>
+                                    <?php
+                                }
+                                ?>
                                 <?php 
                                 if($data['act']['message']) {
                                     echo ($data['act']['type'] == 1)? '<div class="errmsg m-t-4"><div class="alert alert-success"><i class="fa fa-check-square-o">&nbsp;</i>'.$data['act']['message'].'</div></div>':'<div class="errmsg m-t-4"><div class="alert alert-danger"><i class="fa fa-times">&nbsp;</i>'.$data['act']['message'].'</div></div>';
                                 }
                                 ?>
+
+
                             </div>
                         </form>
                     </div>
@@ -295,7 +317,6 @@ else {
 <script type="text/javascript">
     var ajx_url = "./index.php?pageType=<?php echo $this->_request['pageType'];?>&dtls=<?php echo $this->_request['dtls'];?>";
     $(function(){
-
         $(document).on("change", "#sltSize", function() {
             var sizeId = $(this).val();
             var sltCategory = $('#sltType').empty();
@@ -466,5 +487,42 @@ else {
                 });
             }
         });
+
+        // single product delete
+        $(document).on('click','.delete_product, .trash_position', function(){
+            var dataId = $(this).data('id');
+            var moduleid = $(this).attr('data-moduleId');
+            if(dataId != 0){
+                swal({
+                    title: "Are You sure",
+                    text: "want to delete it!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it !!",
+                    closeOnConfirm: true
+                }, function(isConfirm){
+                    if(!isConfirm) return;
+                    $.ajax({
+                    type: 'POST',
+                    url: ajx_url,
+                    data: "id=" + dataId + "&moduleId=" + moduleid + "&ajx_action=singleDeleteProduct",
+                    success: function(response) {
+                        if(response.type == 1){
+                            toster(response.type, response.message);
+                            setTimeout(() => {
+                                location.reload(true);
+                            }, 2000);
+                        }else{
+                            toster(response.type, response.message);
+                        }
+                    }
+                });
+            });
+            }else{
+                toster(4, "Id is empty");
+            }
+        });
     });
+
 </script>

@@ -56,6 +56,8 @@ class PapertypeModel extends Site
 		$ExtraQryStr .= " GROUP BY tpc.categoryId ORDER BY tpc.displayOrder";
         return $this->selectMulti($ENTITY, $fieldset, $ExtraQryStr, $start, $limit);
     }
+
+
     
     function buildTree(array $elements, $parentId = 0) {
         $branch = array();
@@ -129,5 +131,15 @@ class PapertypeModel extends Site
     function settings($name) {
         $ExtraQryStr = "name = '".addslashes($name)."'";
 		return $this->selectSingle(TBL_SETTINGS, "*", $ExtraQryStr);
+    }
+
+    function getCategoryName($pId){
+        $ExtraQryStr = "categoryId = '".addslashes($pId)."'";
+        return $this->selectSingle(TBL_PRODUCT_TYPE, "categoryName", $ExtraQryStr);
+    }
+
+    function checkProductExist($catId){
+        $ExtraQryStr = "typeId = '".addslashes($catId)."'";
+        return $this->selectSingle(TBL_PRODUCT, "*", $ExtraQryStr);
     }
 }
